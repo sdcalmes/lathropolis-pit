@@ -154,6 +154,9 @@ async function loadLeague() {
         displayTeamSelection();
         elements.teamSelectionSection.classList.remove('hidden');
 
+        // Update section heights for mobile collapse
+        setTimeout(updateSectionHeights, 100);
+
         // Save to localStorage
         saveToLocalStorage();
 
@@ -485,6 +488,9 @@ function renderBracketView() {
     // Update and render team records
     updateTeamRecords();
     renderTeamRecords();
+
+    // Update section heights for mobile collapse
+    setTimeout(updateSectionHeights, 100);
 }
 
 // Create bracket matchup element for viewing
@@ -842,6 +848,65 @@ async function loadFromURL() {
     }
 }
 
+// Toggle section collapse
+function toggleSectionCollapse(section) {
+    const content = section.querySelector('.section-content');
+
+    // Toggle collapsed class
+    section.classList.toggle('collapsed');
+
+    // Set max-height for smooth animation
+    if (section.classList.contains('collapsed')) {
+        content.style.maxHeight = '0';
+    } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+    }
+}
+
+// Initialize collapsible sections
+function initCollapsibleSections() {
+    // Only enable on mobile
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+        const sections = document.querySelectorAll('.section');
+
+        sections.forEach(section => {
+            const header = section.querySelector('.section-header');
+            const content = section.querySelector('.section-content');
+
+            if (header && content) {
+                // Set initial max-height
+                content.style.maxHeight = content.scrollHeight + 'px';
+
+                // Add click listener to header
+                header.addEventListener('click', (e) => {
+                    // Don't collapse if clicking on buttons or inputs
+                    if (e.target.closest('button') || e.target.closest('input') || e.target.closest('select')) {
+                        return;
+                    }
+                    toggleSectionCollapse(section);
+                });
+            }
+        });
+    }
+}
+
+// Update section heights when content changes
+function updateSectionHeights() {
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+        const sections = document.querySelectorAll('.section:not(.collapsed)');
+        sections.forEach(section => {
+            const content = section.querySelector('.section-content');
+            if (content) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+        });
+    }
+}
+
 // Initialize app
 function init() {
     // Load from URL first (takes precedence)
@@ -851,6 +916,28 @@ function init() {
         // Otherwise load from localStorage
         loadFromLocalStorage();
     }
+
+    // Initialize collapsible sections on mobile
+    initCollapsibleSections();
+
+    // Update section heights on window resize
+    window.addEventListener('resize', () => {
+        const isMobile = window.innerWidth <= 768;
+        const sections = document.querySelectorAll('.section');
+
+        sections.forEach(section => {
+            const content = section.querySelector('.section-content');
+            if (content) {
+                if (!isMobile) {
+                    // Remove collapse on desktop
+                    section.classList.remove('collapsed');
+                    content.style.maxHeight = 'none';
+                } else if (!section.classList.contains('collapsed')) {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
+            }
+        });
+    });
 
     // Event listeners
     elements.loadLeagueBtn.addEventListener('click', loadLeague);

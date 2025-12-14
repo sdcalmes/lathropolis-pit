@@ -25,7 +25,9 @@
             <div class="section-header">
                 <h2>INITIALIZE</h2>
                 <div class="section-line"></div>
+                <div class="section-collapse-icon">▼</div>
             </div>
+            <div class="section-content">
             <div class="input-group">
                 <label for="league-id" class="input-label">LEAGUE ID</label>
                 <div class="input-wrapper">
@@ -50,6 +52,7 @@
                     <div id="current-week" class="info-value">--</div>
                 </div>
             </div>
+            </div>
         </section>
 
         <!-- Team Selection Section -->
@@ -60,12 +63,15 @@
                 <div class="selection-counter">
                     <span id="selected-count">0</span>/6
                 </div>
+                <div class="section-collapse-icon">▼</div>
             </div>
+            <div class="section-content">
             <div id="team-list" class="team-grid"></div>
             <button id="create-bracket-btn" class="btn btn-primary btn-large hidden">
                 <span class="btn-text">BUILD BRACKET</span>
                 <span class="btn-arrow">→</span>
             </button>
+            </div>
         </section>
 
         <!-- Bracket Builder Section -->
@@ -73,7 +79,9 @@
             <div class="section-header">
                 <h2>CONFIGURE MATCHUPS</h2>
                 <div class="section-line"></div>
+                <div class="section-collapse-icon">▼</div>
             </div>
+            <div class="section-content">
 
             <div class="week-selector">
                 <label for="playoff-week-select" class="input-label">PLAYOFF WEEK</label>
@@ -124,6 +132,7 @@
                 <span class="btn-text">SAVE & VIEW BRACKET</span>
                 <span class="btn-arrow">→</span>
             </button>
+            </div>
         </section>
 
         <!-- Bracket View Section -->
@@ -131,19 +140,21 @@
             <div class="section-header">
                 <h2>TOURNAMENT BRACKET</h2>
                 <div class="section-line"></div>
-                <div class="bracket-controls">
-                    <button id="refresh-scores-btn" class="btn btn-icon" title="Refresh Scores">
-                        <span class="refresh-icon">↻</span>
-                    </button>
-                    <button id="edit-bracket-btn" class="btn btn-secondary">
-                        <span>EDIT</span>
-                    </button>
-                    <button id="share-bracket-btn" class="btn btn-primary">
-                        <span>SHARE</span>
-                        <span class="btn-arrow">↗</span>
-                    </button>
-                </div>
+                <div class="section-collapse-icon">▼</div>
             </div>
+            <div class="bracket-controls">
+                <button id="refresh-scores-btn" class="btn btn-icon" title="Refresh Scores">
+                    <span class="refresh-icon">↻</span>
+                </button>
+                <button id="edit-bracket-btn" class="btn btn-secondary">
+                    <span>EDIT</span>
+                </button>
+                <button id="share-bracket-btn" class="btn btn-primary">
+                    <span>SHARE</span>
+                    <span class="btn-arrow">↗</span>
+                </button>
+            </div>
+            <div class="section-content">
 
             <div id="bracket-display" class="bracket-tournament"></div>
 
@@ -158,6 +169,7 @@
                     <p>Teams highlighted in red are eligible for last place</p>
                 </div>
                 <div id="team-records" class="standings-grid"></div>
+            </div>
             </div>
         </section>
 
