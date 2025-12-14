@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Losers Bracket // Sleeper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="container">
+        <header class="main-header">
+            <div class="header-top">
+                <div class="logo">LOSERS BRACKET</div>
+                <div class="league-badge" id="league-badge"></div>
+            </div>
+            <div class="header-subtitle">PLAYOFF ELIMINATION TOURNAMENT</div>
+        </header>
+
+        <!-- League Setup Section -->
+        <section id="setup-section" class="section">
+            <div class="section-header">
+                <h2>INITIALIZE</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="input-group">
+                <label for="league-id" class="input-label">LEAGUE ID</label>
+                <div class="input-wrapper">
+                    <input type="text" id="league-id" placeholder="1234567890123456789" class="league-input">
+                    <button id="load-league-btn" class="btn btn-primary">
+                        <span class="btn-text">LOAD</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+            </div>
+            <div id="league-info" class="league-info hidden">
+                <div class="info-card">
+                    <div class="info-label">LEAGUE</div>
+                    <div id="league-name" class="info-value"></div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">SEASON</div>
+                    <div id="league-season" class="info-value"></div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">WEEK</div>
+                    <div id="current-week" class="info-value">--</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Selection Section -->
+        <section id="team-selection-section" class="section hidden">
+            <div class="section-header">
+                <h2>SELECT TEAMS</h2>
+                <div class="section-line"></div>
+                <div class="selection-counter">
+                    <span id="selected-count">0</span>/6
+                </div>
+            </div>
+            <div id="team-list" class="team-grid"></div>
+            <button id="create-bracket-btn" class="btn btn-primary btn-large hidden">
+                <span class="btn-text">BUILD BRACKET</span>
+                <span class="btn-arrow">→</span>
+            </button>
+        </section>
+
+        <!-- Bracket Builder Section -->
+        <section id="bracket-builder-section" class="section hidden">
+            <div class="section-header">
+                <h2>CONFIGURE MATCHUPS</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="week-selector">
+                <label for="playoff-week-select" class="input-label">PLAYOFF WEEK</label>
+                <select id="playoff-week-select" class="week-select">
+                    <option value="">Select playoff week</option>
+                </select>
+            </div>
+
+            <div class="bracket-builder-grid">
+                <!-- Round 1 -->
+                <div class="round-builder">
+                    <div class="round-header">
+                        <span class="round-number">01</span>
+                        <span class="round-title">QUARTERFINALS</span>
+                    </div>
+                    <div id="round-1-matchups" class="matchups"></div>
+                    <button id="add-round-1-matchup" class="btn btn-add">
+                        <span>+</span> ADD MATCHUP
+                    </button>
+                </div>
+
+                <!-- Round 2 -->
+                <div class="round-builder">
+                    <div class="round-header">
+                        <span class="round-number">02</span>
+                        <span class="round-title">SEMIFINALS</span>
+                    </div>
+                    <div id="round-2-matchups" class="matchups"></div>
+                    <button id="add-round-2-matchup" class="btn btn-add">
+                        <span>+</span> ADD MATCHUP
+                    </button>
+                </div>
+
+                <!-- Round 3 -->
+                <div class="round-builder">
+                    <div class="round-header">
+                        <span class="round-number">03</span>
+                        <span class="round-title">FINALS</span>
+                    </div>
+                    <div id="round-3-matchups" class="matchups"></div>
+                    <button id="add-round-3-matchup" class="btn btn-add">
+                        <span>+</span> ADD MATCHUP
+                    </button>
+                </div>
+            </div>
+
+            <button id="save-bracket-btn" class="btn btn-primary btn-large">
+                <span class="btn-text">SAVE & VIEW BRACKET</span>
+                <span class="btn-arrow">→</span>
+            </button>
+        </section>
+
+        <!-- Bracket View Section -->
+        <section id="bracket-view-section" class="section hidden">
+            <div class="section-header">
+                <h2>TOURNAMENT BRACKET</h2>
+                <div class="section-line"></div>
+                <div class="bracket-controls">
+                    <button id="refresh-scores-btn" class="btn btn-icon" title="Refresh Scores">
+                        <span class="refresh-icon">↻</span>
+                    </button>
+                    <button id="edit-bracket-btn" class="btn btn-secondary">
+                        <span>EDIT</span>
+                    </button>
+                    <button id="share-bracket-btn" class="btn btn-primary">
+                        <span>SHARE</span>
+                        <span class="btn-arrow">↗</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="bracket-display" class="bracket-tournament"></div>
+
+            <!-- Standings Summary -->
+            <div class="standings-section">
+                <div class="standings-header">
+                    <h3>STANDINGS</h3>
+                    <div class="standings-line"></div>
+                </div>
+                <div class="standings-note">
+                    <p>Total record = Regular season + (Playoff games × 2)</p>
+                    <p>Teams highlighted in red are eligible for last place</p>
+                </div>
+                <div id="team-records" class="standings-grid"></div>
+            </div>
+        </section>
+
+        <!-- Share Modal -->
+        <div id="share-modal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>SHARE BRACKET</h3>
+                    <button id="close-modal-btn" class="modal-close">×</button>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-text">Share this link with your leaguemates:</p>
+                    <div class="share-link-wrapper">
+                        <input type="text" id="share-link" readonly class="share-link-input">
+                        <button id="copy-link-btn" class="btn btn-primary">
+                            <span id="copy-btn-text">COPY</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="loading hidden">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <p class="loading-text">LOADING...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
