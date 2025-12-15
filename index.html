@@ -83,19 +83,18 @@
             </div>
             <div class="section-content">
 
-            <div class="week-selector">
-                <label for="playoff-week-select" class="input-label">PLAYOFF WEEK</label>
-                <select id="playoff-week-select" class="week-select">
-                    <option value="">Select playoff week</option>
-                </select>
-            </div>
-
             <div class="bracket-builder-grid">
                 <!-- Round 1 -->
                 <div class="round-builder">
                     <div class="round-header">
                         <span class="round-number">01</span>
                         <span class="round-title">QUARTERFINALS</span>
+                    </div>
+                    <div class="week-selector">
+                        <label for="round-1-week-select" class="input-label">WEEK</label>
+                        <select id="round-1-week-select" class="week-select round-week-select" data-round="round1">
+                            <option value="">Select week</option>
+                        </select>
                     </div>
                     <div id="round-1-matchups" class="matchups"></div>
                     <button id="add-round-1-matchup" class="btn btn-add">
@@ -109,6 +108,12 @@
                         <span class="round-number">02</span>
                         <span class="round-title">SEMIFINALS</span>
                     </div>
+                    <div class="week-selector">
+                        <label for="round-2-week-select" class="input-label">WEEK</label>
+                        <select id="round-2-week-select" class="week-select round-week-select" data-round="round2">
+                            <option value="">Select week</option>
+                        </select>
+                    </div>
                     <div id="round-2-matchups" class="matchups"></div>
                     <button id="add-round-2-matchup" class="btn btn-add">
                         <span>+</span> ADD MATCHUP
@@ -120,6 +125,12 @@
                     <div class="round-header">
                         <span class="round-number">03</span>
                         <span class="round-title">FINALS</span>
+                    </div>
+                    <div class="week-selector">
+                        <label for="round-3-week-select" class="input-label">WEEK</label>
+                        <select id="round-3-week-select" class="week-select round-week-select" data-round="round3">
+                            <option value="">Select week</option>
+                        </select>
                     </div>
                     <div id="round-3-matchups" class="matchups"></div>
                     <button id="add-round-3-matchup" class="btn btn-add">

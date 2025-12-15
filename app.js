@@ -39,7 +39,9 @@ const elements = {
     selectedCount: document.getElementById('selected-count'),
 
     bracketBuilderSection: document.getElementById('bracket-builder-section'),
-    playoffWeekSelect: document.getElementById('playoff-week-select'),
+    round1WeekSelect: document.getElementById('round-1-week-select'),
+    round2WeekSelect: document.getElementById('round-2-week-select'),
+    round3WeekSelect: document.getElementById('round-3-week-select'),
     round1Matchups: document.getElementById('round-1-matchups'),
     round2Matchups: document.getElementById('round-2-matchups'),
     round3Matchups: document.getElementById('round-3-matchups'),
@@ -168,23 +170,36 @@ async function loadLeague() {
     }
 }
 
-// Populate week selector with playoff weeks
+// Populate week selectors with playoff weeks
 function populateWeekSelector() {
     const playoffStart = state.leagueData.settings.playoff_week_start || 15;
     const currentWeek = state.currentWeek;
 
-    elements.playoffWeekSelect.innerHTML = '<option value="">Select playoff week</option>';
+    const weekSelects = [
+        { element: elements.round1WeekSelect, round: 'round1', defaultWeek: playoffStart },
+        { element: elements.round2WeekSelect, round: 'round2', defaultWeek: playoffStart + 1 },
+        { element: elements.round3WeekSelect, round: 'round3', defaultWeek: playoffStart + 2 }
+    ];
 
-    for (let week = playoffStart; week <= 18; week++) {
-        const option = document.createElement('option');
-        option.value = week;
-        option.textContent = `Week ${week}${week === currentWeek ? ' (Current)' : ''}`;
-        if (week === currentWeek) {
-            option.selected = true;
-            state.playoffWeek = week;
+    weekSelects.forEach(({ element, round, defaultWeek }) => {
+        element.innerHTML = '<option value="">Select week</option>';
+
+        for (let week = playoffStart; week <= 18; week++) {
+            const option = document.createElement('option');
+            option.value = week;
+            option.textContent = `Week ${week}${week === currentWeek ? ' (Current)' : ''}`;
+
+            // Set default week for each round
+            if (week === defaultWeek && !state.roundWeeks[round]) {
+                option.selected = true;
+                state.roundWeeks[round] = week;
+            } else if (state.roundWeeks[round] === week) {
+                option.selected = true;
+            }
+
+            element.appendChild(option);
         }
-        elements.playoffWeekSelect.appendChild(option);
-    }
+    });
 }
 
 // Display team selection
@@ -367,7 +382,7 @@ function handleRemoveMatchup(event) {
 
 // Add matchup to round
 function addMatchup(round) {
-    const week = state.playoffWeek || state.currentWeek;
+    const week = state.roundWeeks[round] || state.currentWeek;
     state.bracket[round].push({ team1: null, team2: null, winner: null, week: week });
     renderMatchupBuilder(round);
     saveToLocalStorage();
@@ -390,12 +405,12 @@ function saveBracket() {
         }
     }
 
-    // Set week for each matchup based on playoff week selector
-    const selectedWeek = parseInt(elements.playoffWeekSelect.value) || state.currentWeek;
+    // Set week for each matchup based on round-specific week selectors
     for (const round in state.bracket) {
+        const roundWeek = state.roundWeeks[round];
         state.bracket[round].forEach(matchup => {
-            if (!matchup.week) {
-                matchup.week = selectedWeek;
+            if (!matchup.week && roundWeek) {
+                matchup.week = roundWeek;
             }
         });
     }
@@ -681,6 +696,7 @@ function shareBracket() {
         leagueId: state.leagueId,
         selectedTeamIds: state.selectedTeams.map(t => t.id),
         bracket: state.bracket,
+        roundWeeks: state.roundWeeks,
         teamRecords: state.teamRecords
     };
 
@@ -741,6 +757,7 @@ function saveToLocalStorage() {
             playoffWeek: state.playoffWeek,
             matchupScores: state.matchupScores,
             bracket: state.bracket,
+            roundWeeks: state.roundWeeks,
             teamRecords: state.teamRecords
         };
         localStorage.setItem('sleeperBracket', JSON.stringify(saveState));
@@ -818,8 +835,9 @@ async function loadFromURL() {
                 state.teams.find(t => t.id === id)
             ).filter(Boolean);
 
-            // Set bracket and records
+            // Set bracket, round weeks, and records
             state.bracket = decoded.bracket;
+            state.roundWeeks = decoded.roundWeeks || { round1: null, round2: null, round3: null };
             state.teamRecords = decoded.teamRecords;
 
             // Display
@@ -951,8 +969,31 @@ function init() {
     elements.addRound2Matchup.addEventListener('click', () => addMatchup('round2'));
     elements.addRound3Matchup.addEventListener('click', () => addMatchup('round3'));
 
-    elements.playoffWeekSelect.addEventListener('change', (e) => {
-        state.playoffWeek = parseInt(e.target.value);
+    // Event listeners for round week selectors
+    elements.round1WeekSelect.addEventListener('change', (e) => {
+        state.roundWeeks.round1 = parseInt(e.target.value);
+        // Update existing matchups in round1 to use new week
+        state.bracket.round1.forEach(matchup => {
+            matchup.week = state.roundWeeks.round1;
+        });
+        saveToLocalStorage();
+    });
+
+    elements.round2WeekSelect.addEventListener('change', (e) => {
+        state.roundWeeks.round2 = parseInt(e.target.value);
+        // Update existing matchups in round2 to use new week
+        state.bracket.round2.forEach(matchup => {
+            matchup.week = state.roundWeeks.round2;
+        });
+        saveToLocalStorage();
+    });
+
+    elements.round3WeekSelect.addEventListener('change', (e) => {
+        state.roundWeeks.round3 = parseInt(e.target.value);
+        // Update existing matchups in round3 to use new week
+        state.bracket.round3.forEach(matchup => {
+            matchup.week = state.roundWeeks.round3;
+        });
         saveToLocalStorage();
     });
 
